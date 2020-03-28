@@ -1,0 +1,7 @@
+[development]
+address = "127.0.0.1"
+port = 8080
+workers = 2
+
+[production]
+port = 8080
