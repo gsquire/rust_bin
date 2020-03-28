@@ -4,7 +4,13 @@ use rocket::{self, local::Client, routes};
 fn setup() -> Client {
     let rocket = rocket::ignite().mount(
         "/",
-        routes![super::ip, super::stream_bytes, super::user_agent],
+        routes![
+            super::index,
+            super::ip,
+            super::status,
+            super::stream_bytes,
+            super::user_agent
+        ],
     );
     Client::new(rocket).unwrap()
 }
@@ -55,4 +61,14 @@ fn stream_bytes() {
 
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.body_bytes().unwrap().len(), 7);
+}
+
+#[test]
+fn status() {
+    let client = setup();
+    let statuses = vec![(204, Status::NoContent), (301, Status::MovedPermanently)];
+    for s in statuses {
+        let response = client.get(format!("/status/{}", s.0)).dispatch();
+        assert_eq!(response.status(), s.1);
+    }
 }

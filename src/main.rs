@@ -10,8 +10,8 @@ use rand::Rng;
 use rocket::http::{ContentType, Status};
 use rocket::request::{self, FromRequest, Request};
 use rocket::response::content::Content;
-use rocket::response::Stream;
-use rocket::{get, routes, Outcome};
+use rocket::response::{NamedFile, Redirect, Stream};
+use rocket::{get, routes, Outcome, Responder};
 use rocket_contrib::helmet::SpaceHelmet;
 use rocket_contrib::json::Json;
 use serde::Serialize;
@@ -66,9 +66,33 @@ fn user_agent(agent: UserAgent) -> Json<UserAgent> {
     Json(agent)
 }
 
+#[derive(Debug, Responder)]
+enum StatusOrRedirect {
+    S(Status),
+    R(Redirect),
+}
+
+#[get("/status/<s>")]
+fn status(s: u16) -> StatusOrRedirect {
+    match Status::from_code(s) {
+        Some(Status::MovedPermanently) => StatusOrRedirect::R(Redirect::moved("/")),
+        Some(Status::Found) => StatusOrRedirect::R(Redirect::found("/")),
+        Some(Status::SeeOther) => StatusOrRedirect::R(Redirect::to("/")),
+        Some(Status::TemporaryRedirect) => StatusOrRedirect::R(Redirect::temporary("/")),
+        Some(Status::PermanentRedirect) => StatusOrRedirect::R(Redirect::permanent("/")),
+        Some(s) => StatusOrRedirect::S(s),
+        None => StatusOrRedirect::S(Status::BadRequest),
+    }
+}
+
+#[get("/")]
+fn index() -> Option<NamedFile> {
+    NamedFile::open("routes.html").ok()
+}
+
 fn main() {
     rocket::ignite()
         .attach(SpaceHelmet::default())
-        .mount("/", routes![ip, stream_bytes, user_agent])
+        .mount("/", routes![index, ip, status, stream_bytes, user_agent])
         .launch();
 }
