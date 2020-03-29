@@ -7,6 +7,7 @@ use std::net::SocketAddr;
 
 use rand::distributions::Uniform;
 use rand::Rng;
+use rocket::config::{Config, Environment};
 use rocket::http::{ContentType, Status};
 use rocket::request::{self, FromRequest, Request};
 use rocket::response::content::Content;
@@ -14,7 +15,7 @@ use rocket::response::{NamedFile, Redirect, Stream};
 use rocket::{get, routes, Outcome, Responder};
 use rocket_contrib::helmet::SpaceHelmet;
 use rocket_contrib::json::Json;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod tests;
@@ -90,8 +91,24 @@ fn index() -> Option<NamedFile> {
     NamedFile::open("routes.html").ok()
 }
 
+fn default_port() -> u16 {
+    8080
+}
+
+#[derive(Debug, Deserialize)]
+struct EnvConfig {
+    #[serde(default = "default_port")]
+    port: u16,
+}
+
 fn main() {
-    rocket::ignite()
+    // We provide a default value so this is safe to do.
+    let env = envy::from_env::<EnvConfig>().unwrap();
+    let config = Config::build(Environment::Production)
+        .port(env.port)
+        .unwrap();
+
+    rocket::custom(config)
         .attach(SpaceHelmet::default())
         .mount("/", routes![index, ip, status, stream_bytes, user_agent])
         .launch();

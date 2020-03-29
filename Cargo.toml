@@ -3,9 +3,16 @@ name = "rust_bin"
 version = "0.1.0"
 authors = ["Garrett Squire <github@garrettsquire.com>"]
 edition = "2018"
+publish = false
 
 [dependencies]
+envy = "0.4"
 rand = "0.7"
 rocket = "0.4"
 rocket_contrib = { version = "0.4", default-features = false, features = ["helmet", "json"] }
 serde = { version = "1.0", features = ["derive"] }
+
+[profile.release]
+lto = true
+panic = 'abort'
+codegen-units = 1
