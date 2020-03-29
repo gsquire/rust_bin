@@ -10,6 +10,9 @@ I am in no way affiliated with Google and just wanted to give this service a spi
 any language and Linux OS without having to worry about provisioning was appealing to me and I wanted
 to test it out.
 
+There is no guarantee that the sample URL will always be available as well. If it becomes costly, then
+I will delete the project but code will remain in this repository.
+
 ## Trying it Out
 If you want to test a running instance, you can see the API by hitting the index page
 [here](https://rustbin-j5pswym3zq-uw.a.run.app/). It will display a few routes that you can then
