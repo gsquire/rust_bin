@@ -1,5 +1,5 @@
 # rust_bin
-![CI](https://github.com/gsquire/rust_bin/workflows/CI/badge.svg)
+![CI](https://github.com/gsquire/rust_bin/workflows/CI/badge.svg?branch=master&event=push)
 
 This is a stateless HTTP application used to try out Google's [Cloud Run](https://cloud.google.com/run)
 environment. It is a simple service similar to [httpbin](https://httpbin.org/) with far fewer
