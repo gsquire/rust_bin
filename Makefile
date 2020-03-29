@@ -14,4 +14,4 @@ release: docs
 test:
 	cargo +nightly test
 
-.PHONY: build docs release test
+.PHONY: build clean docs release test
