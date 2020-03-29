@@ -10,6 +10,23 @@ I am in no way affiliated with Google and just wanted to give this service a spi
 any language and Linux OS without having to worry about provisioning was appealing to me and I wanted
 to test it out.
 
+## Trying it Out
+If you want to test a running instance, you can see the API by hitting the index page
+[here](https://rustbin-j5pswym3zq-uw.a.run.app/). It will display a few routes that you can then
+use `curl` or your favorite HTTP library to run requests against.
+
+Sample Request:
+
+```sh
+# If you have `jq` installed:
+curl -s https://rustbin-j5pswym3zq-uw.a.run.app/user-agent | jq .
+
+# Response:
+{
+  "user-agent": "curl/7.54.0"
+}
+```
+
 ## Setup
 If you wish to run the service locally, you can use the specified `Dockerfile` and build it with the
 following command:
